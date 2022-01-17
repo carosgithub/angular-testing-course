@@ -4,10 +4,15 @@ import { LoggerService } from "./logger.service";
 describe('Calculator Service', () => {
 
   it('It should add two numbers', () => {
-    const calculator = new CalculatorService(new LoggerService());
+    const logger = new LoggerService();
+    spyOn(logger, 'log');
+
+    const calculator = new CalculatorService(logger);
     const result = calculator.add(2, 3);
 
     expect(result).toBe(5);
+
+    expect(logger.log).toHaveBeenCalledTimes(1);
   });
 
   it('It should substract two numbers', () => {
