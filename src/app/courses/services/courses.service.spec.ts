@@ -43,4 +43,24 @@ describe('CoursesService', () => {
 
   });
 
+
+  it('should find one course by id', () => {
+
+    coursesService.findCourseById(12)
+      .subscribe(course => {
+        expect(course).toBeTruthy();
+        expect(course.id).toBe(12);
+      });
+
+      const req = httpTestingController.expectOne('/api/courses/12')
+      expect(req.request.method).toEqual('GET');
+
+      req.flush(COURSES[12]);
+
+  });
+
+  afterEach(() => {
+    httpTestingController.verify(); // only one request has been made - expected at the end
+  })
+
 });
