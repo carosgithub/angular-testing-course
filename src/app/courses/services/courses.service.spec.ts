@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { CoursesService } from "./courses.service";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { COURSES } from "../../../../server/db-data";
+import { COURSES, findLessonsForCourse } from "../../../../server/db-data";
 import { Course } from "../model/course";
 import { HttpErrorResponse } from "@angular/common/http";
 
@@ -45,7 +45,6 @@ describe('CoursesService', () => {
 
   });
 
-
   it('should find one course by id', () => {
 
     coursesService.findCourseById(12)
@@ -79,9 +78,9 @@ describe('CoursesService', () => {
         ...changes}
       );
 
-    });
+  });
 
-    it('should give an error if save couse fails', () => {
+  it('should give an error if save couse fails', () => {
       const changes: Partial<Course> = {titles: {description: 'Testing Course'}}
 
       coursesService.saveCourse(12, changes)
@@ -97,12 +96,37 @@ describe('CoursesService', () => {
         expect(req.request.method).toEqual('PUT');
 
         req.flush('Save course failed', { status: 500, statusText:'Internal Server Error'})
-    });
+  });
 
-    afterEach(() => {
-      httpTestingController.verify(); // only one request has been made - expected at the end
-    });
+  it('should find a list of lessons', () => {
+    coursesService.findLessons(12)
+      .subscribe(lessons => {
+        expect(lessons).toBeTruthy();
 
+        expect(lessons.length).toBe(3);
+      });
 
+      //find lessons won't find this url
+      //const req = httpTestingController.expectOne('/api/lessons?courseId=12&pageSize=3');
+
+      const req = httpTestingController.expectOne(req => req.url == '/api/lessons')
+
+      expect(req.request.method).toEqual('GET');
+
+      expect(req.request.params.get('courseId')).toEqual('12');
+      expect(req.request.params.get('filter')).toEqual('');
+      expect(req.request.params.get('sortOrder')).toEqual('asc');
+      expect(req.request.params.get('pageNumber')).toEqual('0');
+      expect(req.request.params.get('pageSize')).toEqual('3');
+
+      req.flush({
+        payload: findLessonsForCourse(12).slice(0, 3)
+      })
+
+  })
+
+  afterEach(() => {
+    httpTestingController.verify(); // only one request has been made - expected at the end
+  });
 
 });
