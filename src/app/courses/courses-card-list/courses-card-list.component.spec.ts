@@ -12,7 +12,8 @@ import { assert } from 'console';
 describe('CoursesCardListComponent', () => {
 
   let component: CoursesCardListComponent,
-      fixture: ComponentFixture<CoursesCardListComponent>;
+      fixture: ComponentFixture<CoursesCardListComponent>,
+      el: DebugElement;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -22,8 +23,8 @@ describe('CoursesCardListComponent', () => {
     }).compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(CoursesCardListComponent);
-
         component = fixture.componentInstance;
+        el = fixture.debugElement;
       });
   }));
 
@@ -36,12 +37,16 @@ describe('CoursesCardListComponent', () => {
 
   it("should display the course list", () => {
 
-    pending();
+    component.courses = setupCourses();
+    const cards = el.queryAll(By.css('.course-card'));
+
+    expect(cards).toBeTruthy('Could not find cards');
+    expect(cards.length).toBe(12, 'Unexpected number of rows');
 
   });
 
 
-  it("should display the first course", () => {
+  it("should display the first rows", () => {
 
       pending();
 
