@@ -105,16 +105,7 @@ describe('HomeComponent', () => {
     expect(tabs.length).toBe(2, 'Expected to find 2 tabs');
 
     //simulating user interaction
-    //el.nativeElement.click();
-    click(tabs[1]);
-
-    fixture.detectChanges();
-
-    const cardTitles = el.queryAll(By.css('.mat-card-title'));
-
-    expect(cardTitles.length).toBeGreaterThan(0, "Could not find card titles");
-
-    expect(cardTitles[0].nativeElement.textContext).toContain('Angular Security Course');
+    el.nativeElement.click();
 
   });
 
