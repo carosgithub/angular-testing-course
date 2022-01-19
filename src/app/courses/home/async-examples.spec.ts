@@ -1,4 +1,5 @@
-import { fakeAsync, flush } from "@angular/core/testing";
+import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing";
+import { promise } from "selenium-webdriver";
 
 fdescribe('Async Testing Examples', () => {
 
@@ -23,6 +24,49 @@ fdescribe('Async Testing Examples', () => {
     flush();
 
     expect(test).toBeTruthy();
+
+  }));
+
+  it ('Asynchrous test example - plain Promise', fakeAsync(() => {
+    let test = false;
+    console.log('Creating promise');
+
+    Promise.resolve().then(() => {
+      console.log('Promise first then () evaluated successfully');
+      return Promise.resolve();
+
+    })
+      .then(() => {
+        console.log('Promise second then () evaluated successfully')
+        test = true;
+      });
+
+      flushMicrotasks();
+
+      console.log('Running test assertions.')
+
+      expect(test).toBeTruthy();
+  }));
+
+
+  it('Asynchronous test example - plain Promise + setTimeout()', fakeAsync(() => {
+    let counter = 0;
+
+    console.log('Creating promise');
+
+    Promise.resolve().then(() => {
+      counter+=10
+      setTimeout(() => {
+        counter += 1;
+      }, 1000);
+    });
+    expect(counter).toBe(0);
+    flushMicrotasks();
+    expect(counter).toBe(10);
+    tick(500);
+    expect(counter).toBe(10);
+    tick(500);
+    expect(counter).toBe(11);
 
   }));
 
