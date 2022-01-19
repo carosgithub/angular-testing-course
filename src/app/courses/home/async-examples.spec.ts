@@ -3,7 +3,7 @@ import { of } from "rxjs";
 import { delay } from "rxjs/operators";
 import { promise } from "selenium-webdriver";
 
-fdescribe('Async Testing Examples', () => {
+describe('Async Testing Examples', () => {
 
   it('Asynchronous test example with Jasmin done()', (done: DoneFn) => {
     let test = false;
